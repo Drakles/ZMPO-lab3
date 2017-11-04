@@ -5,23 +5,57 @@ int main() {
 
     using namespace std;
 
-    CTree c;
+//    CTree c;
+//
+//    string expr = "+*12a";
+//
+//    c.createTree(expr);
+//
+//    c.printAsTree();
+//
+//
+//    c.printInOrder();
+//
+//    cout << endl;
+//
+//    cout <<  c.getStringInNormalNotation() << endl;
+//
+//    c.printVariables();
+//
+//    c.printPostOrder();
 
-    string expr = "+*12a";
 
-    c.createTree(expr);
+    CTree a,b;
 
-    c.printAsTree();
+    string s = "+*12a";
 
+    a.createTree(s);
 
-    c.printInOrder();
+    cout << "Drzewo pierwsze" << endl;
+
+    a.printAsTree();
 
     cout << endl;
 
-    cout <<  c.getStringInNormalNotation() << endl;
+    string s1 = "+11";
 
-    c.printVariables();
+    b.createTree(s1);
 
-    c.printPostOrder();
+    cout << "Drzewo drugie" << endl;
+
+    b.printAsTree();
+
+    cout << endl;
+
+    CTree c;
+
+    c = b;
+
+    cout << "Drzewo trzecie" << endl;
+
+    c = c + a;
+
+    c.printAsTree();
+
 
 }

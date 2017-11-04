@@ -74,17 +74,35 @@ void CTree::createTree(CNode *&actualNode,CNode *&parentNode,string &expr){
     }
 }
 
+CNode*& CTree::findNodeToAttachedTree(CNode *&node){
+    if(node->leftChild != nullptr) findNodeToAttachedTree(node->leftChild);
+    else return node;
+}
 
+
+
+CTree& CTree::operator+(CTree &otherTree){
+    CTree ct;
+
+    ct.root = this->root;
+
+    ct.findNodeToAttachedTree(ct.root) = otherTree.root;
+
+    return ct;
+}
+
+CTree & CTree::operator=(CTree &t){
+    root = t.root;
+    return *this;
+}
 
 void CTree::printInOrder(CNode *node){
     if(node->leftChild != nullptr){
-        //cout << "(";
         printInOrder(node->leftChild);
     }
     cout <<node->value;
     if(node->righChild != nullptr){
         printInOrder(node->righChild);
-        //cout << ")";
     }
 }
 
@@ -127,9 +145,7 @@ void CTree::printVariables(){
     for (it = setOfVariables.begin(); it!=setOfVariables.end() ; it++) {
         cout << *it << ",";
     }
-
     cout << endl;
-
 }
 
 

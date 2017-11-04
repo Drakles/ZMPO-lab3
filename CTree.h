@@ -24,6 +24,8 @@ public:
     string getStringInNormalNotation();
     void printVariables();
     void printPostOrder();
+    CTree & operator=(CTree &t);
+    CTree& operator+(CTree &tree);
 private:
     void printBinaryTree(CNode *node, int level);
     int nodes(CNode *node);
@@ -32,11 +34,12 @@ private:
     void printInOrder(CNode *node);
     void getStringInNormalNotation(CNode *node, string &outputString);
     bool isOpetator(char valueToCheck);
-
     std::set<char> getVariables();
-
     void printPostOrder(CNode *node);
+    CNode *&findNodeToAttachedTree(CNode *&node);
+
 };
+    CTree addTree(CTree a, CTree b);
 
 
 #endif //LISTA3_CTREE_H

@@ -20,6 +20,7 @@ public:
     CNode *leftChild;
 
     std::string toString();
+    CNode & operator=(CNode &otherNode);
 };
 
 

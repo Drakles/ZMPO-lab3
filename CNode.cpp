@@ -18,3 +18,12 @@ std::string CNode::toString(){
     return this->value;
 }
 
+CNode &CNode::operator=(CNode &otherNode) {
+    value = otherNode.value;
+    parent = otherNode.parent;
+    leftChild = otherNode.leftChild;
+    righChild = otherNode.righChild;
+
+    return *this;
+}
+
