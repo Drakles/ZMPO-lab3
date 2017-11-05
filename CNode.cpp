@@ -19,10 +19,13 @@ std::string CNode::toString(){
 }
 
 CNode &CNode::operator=(CNode &otherNode) {
+
     value = otherNode.value;
     parent = otherNode.parent;
     leftChild = otherNode.leftChild;
     righChild = otherNode.righChild;
+
+    cout << "wywoluje operator = " << endl;
 
     return *this;
 }

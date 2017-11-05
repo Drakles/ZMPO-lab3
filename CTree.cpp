@@ -76,17 +76,35 @@ void CTree::createTree(CNode *&actualNode,CNode *&parentNode,string &expr){
 
 CNode*& CTree::findNodeToAttachedTree(CNode *&node){
     if(node->leftChild != nullptr) findNodeToAttachedTree(node->leftChild);
-    else return node;
+    else{
+        return node;
+    }
 }
 
 
 
 CTree& CTree::operator+(CTree &otherTree){
+
+    //b+a
+
     CTree ct;
 
     ct.root = this->root;
 
-    ct.findNodeToAttachedTree(ct.root) = otherTree.root;
+//    cout << "value of other tree = "<<otherTree.root->value << endl; // a
+//
+//    cout << "value of this.root = " << this->root->value << endl; // b
+
+    //ct.findNodeToAttachedTree(ct.root)->value="1234";
+
+    CNode * p;
+    p = ct.root;
+
+    while (p->leftChild->leftChild != nullptr){
+        p = p->leftChild;
+    }
+
+    p->leftChild = otherTree.root;
 
     return ct;
 }

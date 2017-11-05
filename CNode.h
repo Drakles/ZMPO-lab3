@@ -8,12 +8,12 @@
 #include <string>
 
 class CNode {
-    CNode(const std::string &value, CNode *parent);
 
     friend class CTree;
 
 
 public:
+    CNode(const std::string &value, CNode *parent);
     CNode *parent;
     CNode *righChild;
     std::string value;
