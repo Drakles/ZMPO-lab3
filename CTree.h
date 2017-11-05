@@ -26,6 +26,7 @@ public:
     void printPostOrder();
     CTree & operator=(CTree &t);
     CTree& operator+(CTree &tree);
+    double computeTree();
 private:
     void printBinaryTree(CNode *node, int level);
     int nodes(CNode *node);
@@ -33,10 +34,12 @@ private:
     void createTree(CNode *&actualNode, CNode *&parentNode, string &expr);
     void printInOrder(CNode *node);
     void getStringInNormalNotation(CNode *node, string &outputString);
-    bool isOpetator(char valueToCheck);
+    bool isOperator(char valueToCheck);
     std::set<char> getVariables();
     void printPostOrder(CNode *node);
     CNode *&findNodeToAttachedTree(CNode *&node);
+
+    double comp(CNode *node);
 
 };
     CTree addTree(CTree a, CTree b);

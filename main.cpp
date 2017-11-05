@@ -9,7 +9,7 @@ int main() {
 
     CTree a,b;
 
-    string s = "+*12a";
+    string s = "+*224";
 
     a.createTree(s);
 
@@ -17,31 +17,14 @@ int main() {
 
     a.printAsTree();
 
+    a.printPostOrder();
     cout << endl;
 
-    string s1 = "*34";
+    a.printInOrder();
 
-    b.createTree(s1);
+    cout << endl << a.getStringInNormalNotation() << endl;
 
-    cout << "Drzewo drugie" << endl;
-
-    b.printAsTree();
-
-    cout << endl;
-
-    CTree c;
-
-//    cout << "Drzewo trzecie b+a" << endl;
-//
-//    c = b + a;
-//
-//    c.printAsTree();
-
-    cout << "DRzewo czwarte" << endl;
-
-    c = a + b;
-
-    c.printAsTree();
+    cout << a.computeTree() << endl;
 
 
 }

@@ -5,12 +5,13 @@
 #include <iostream>
 #include <set>
 #include "CTree.h"
+#include <math.h>
 
 void printPostOrder(CNode *pNode);
 
 using namespace std;
 
- void CTree::printBinaryTree(CNode *node, int level) {
+void CTree::printBinaryTree(CNode *node, int level) {
     if (node == nullptr) {
         return;
     }
@@ -147,7 +148,7 @@ std::set<char> CTree::getVariables(){
     set<char> setOfVariables;
 
     for (int i = 0; i < expr.length() ; ++i) {
-        if(!isOpetator(expr[i]) && setOfVariables.count(expr[i])==0){
+        if(!isOperator(expr[i]) && setOfVariables.count(expr[i])==0){
             setOfVariables.insert(expr[i]);
         }
     }
@@ -179,15 +180,40 @@ void CTree::printPostOrder(CNode *node) {
 }
 
 
+double CTree::comp(CNode *node){
+    if(node != nullptr) {
+        if (isOperator(node->value)) {
 
+            switch(node->value.at(0)){
+                case '*':
+                    return comp(node->leftChild) * comp(node->righChild);
+                case '/':
+                    return comp(node->leftChild) / comp(node->righChild);
+                case '+':
+                    return comp(node->leftChild) + comp(node->righChild);
+                case '-':
+                    return comp(node->leftChild) - comp(node->righChild);
+                case 's':
+                    return sin(comp(node->leftChild));
+                case 'c':
+                    return cos(comp(node->leftChild));
+            }
+        }else{
+            return stoi(node->value);
+        }
+    }
+}
 
-
+double CTree::computeTree(){
+    return comp(root);
+}
 
 
 bool CTree::isOperator(string valueToCheck){
-    return (valueToCheck == "*" || valueToCheck == "/" || valueToCheck == "+" || valueToCheck == "-");
+    return (valueToCheck == "*" || valueToCheck == "/" || valueToCheck == "+" || valueToCheck == "-"
+            || valueToCheck == "sin" || valueToCheck == "cos");
 }
 
-bool CTree::isOpetator(char valueToCheck){
+bool CTree::isOperator(char valueToCheck){
     return (valueToCheck =='*' || valueToCheck == '/' || valueToCheck == '+' || valueToCheck == '-');
 }
