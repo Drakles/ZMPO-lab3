@@ -59,15 +59,27 @@ void CTree::createTree(CNode *&actualNode,CNode *&parentNode,string &expr){
 
     if(expr.length() > 0) {
         if (actualNode == nullptr) {
-            actualNode = new CNode(expr.substr(0, 1), parentNode);
-            expr = expr.substr(1, expr.length());
-        }
-        if (isOperator(actualNode->value)) { // if value is operator then it should has two children
-            if (actualNode->leftChild == nullptr) {
-                createTree(actualNode->leftChild,actualNode, expr);
+
+            if(expr.substr(0,3) == "sin" || expr.substr(0,3) == "cos" ){
+                actualNode = new CNode(expr.substr(0, 3), parentNode);
+                expr = expr.substr(3, expr.length());
+            }else {
+                actualNode = new CNode(expr.substr(0, 1), parentNode);
+                expr = expr.substr(1, expr.length());
             }
-            if (actualNode->righChild == nullptr) {
-                createTree(actualNode->righChild,actualNode, expr);
+        }
+        if (isOperator(actualNode->value)) {
+
+            if(isOperatorSinOrCos(actualNode->value)){ // if value is sin or cos
+                if(actualNode->leftChild == nullptr) createTree(actualNode->leftChild,actualNode,expr);
+            }else {
+                // if value is operator but not cos or sin then it should has two children
+                if (actualNode->leftChild == nullptr) {
+                    createTree(actualNode->leftChild, actualNode, expr);
+                }
+                if (actualNode->righChild == nullptr) {
+                    createTree(actualNode->righChild, actualNode, expr);
+                }
             }
         } else {
             createTree(actualNode->parent,parentNode->parent, expr);
@@ -216,4 +228,8 @@ bool CTree::isOperator(string valueToCheck){
 
 bool CTree::isOperator(char valueToCheck){
     return (valueToCheck =='*' || valueToCheck == '/' || valueToCheck == '+' || valueToCheck == '-');
+}
+
+bool CTree::isOperatorSinOrCos(string operatorToCheck){
+    return (operatorToCheck == "sin" || operatorToCheck =="cos");
 }

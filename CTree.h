@@ -18,7 +18,6 @@ public:
     int nodes();
     void printAsTree();
     CTree();
-    CNode *root;
     void createTree(string &expr);
     void printInOrder();
     string getStringInNormalNotation();
@@ -28,6 +27,7 @@ public:
     CTree& operator+(CTree &tree);
     double computeTree();
 private:
+    CNode *root;
     void printBinaryTree(CNode *node, int level);
     int nodes(CNode *node);
     bool isOperator(string valueToCheck);
@@ -38,11 +38,9 @@ private:
     std::set<char> getVariables();
     void printPostOrder(CNode *node);
     CNode *&findNodeToAttachedTree(CNode *&node);
-
     double comp(CNode *node);
 
+    bool isOperatorSinOrCos(string operatorToCheck);
 };
-    CTree addTree(CTree a, CTree b);
-
 
 #endif //LISTA3_CTREE_H

@@ -9,7 +9,7 @@ int main() {
 
     CTree a,b;
 
-    string s = "+*224";
+    string s = "+*22cos0";
 
     a.createTree(s);
 
@@ -22,9 +22,6 @@ int main() {
 
     a.printInOrder();
 
-    cout << endl << a.getStringInNormalNotation() << endl;
-
-    cout << a.computeTree() << endl;
 
 
 }
