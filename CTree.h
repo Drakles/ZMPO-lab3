@@ -22,12 +22,10 @@ public:
     void createTree(string &expr);
     void printInOrder();
     string getStringInNormalNotation();
-    void printVariables();
     void printPostOrder();
     CTree & operator=(CTree &t);
     CTree& operator+(CTree &tree);
     double computeTree();
-    set<string> getVariables(string expr);
     void printVariables(set<string> setOfVariables);
     set<string> getVariables();
 private:
@@ -41,7 +39,6 @@ private:
     bool isOperator(char valueToCheck);
     void printPostOrder(CNode *node);
     CNode *&findNodeToAttachedTree(CNode *&node);
-    double comp(CNode *node);
 
     bool isOperatorSinOrCos(string operatorToCheck);
 
@@ -51,6 +48,13 @@ private:
     //set<string> &*getVariables(CNode *node, set<string> *&setOfVariables);
 
     //set<string> &*getVariables(CNode *node, set<string> &*setOfVariables);
+    //double comp(CNode *node, set<string> &setOfVariables);
+
+    set<double> getValuesFromUser();
+
+    bool isNumber(string valueToCheck);
+
+    double comp(CNode *node, set<double> &setOfValueOfVariables);
 };
 
 #endif //LISTA3_CTREE_H

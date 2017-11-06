@@ -169,38 +169,13 @@ string CTree::getStringInNormalNotation(){
 
 void CTree::getVariables(CNode *node, set<string> &setOfVariables){
 
-//    while(!isspace(expr.at(expr.length()))) {
-//
-//        string value = "";
-//
-//        while (expr[0] == ' ') {
-//            expr = expr.substr(1, expr.length());
-//        }
-//
-//        while (!isspace(expr.at(0)) && expr.length() > 1) {
-//
-//            value.append(expr.substr(0,1));
-//            expr = expr.substr(1, expr.length());
-//
-//        }
-//            if (!isOperator(value) && setOfVariables.count(value) == 0) {
-//                setOfVariables.insert(value);
-//            }
-//    }
-
-    cout << "wszedlem do getVariables aktualny node.value to= "<<node->value<<"a setOfVariables=";
     set<string>::iterator it;
-
-    for (it = setOfVariables.begin(); it!=setOfVariables.end() ; it++) {
-        cout << *it << ",";
-    }
 
     if(node->leftChild != nullptr){
         getVariables(node->leftChild,setOfVariables);
     }
 
-    if(!isOperator(node->value)){
-        cout << "dodaje value do set"<<endl;
+    if(!isOperator(node->value) && !isNumber(node->value)){
         setOfVariables.insert(node->value);
     }
     if(node->righChild != nullptr){
@@ -211,7 +186,6 @@ void CTree::getVariables(CNode *node, set<string> &setOfVariables){
 set<string> CTree::getVariables(){
     set<string> setOfVariables;
 
-    cout <<"jestem w getVariables() i wywoluje na roocie getVariables"<<endl;
     getVariables(root,setOfVariables);
 
     return setOfVariables;
@@ -253,34 +227,62 @@ void CTree::printPostOrder(CNode *node) {
 }
 
 
-double CTree::comp(CNode *node){
+double CTree::comp(CNode *node,set<double> &setOfValueOfVariables){
     if(node != nullptr) {
         if (isOperator(node->value)) {
 
             switch(node->value.at(0)){
                 case '*':
-                    return comp(node->leftChild) * comp(node->righChild);
+                    return comp(node->leftChild,setOfValueOfVariables) * comp(node->righChild,setOfValueOfVariables);
                 case '/':
-                    return comp(node->leftChild) / comp(node->righChild);
+                    return comp(node->leftChild,setOfValueOfVariables) / comp(node->righChild,setOfValueOfVariables);
                 case '+':
-                    return comp(node->leftChild) + comp(node->righChild);
+                    return comp(node->leftChild,setOfValueOfVariables) + comp(node->righChild,setOfValueOfVariables);
                 case '-':
-                    return comp(node->leftChild) - comp(node->righChild);
+                    return comp(node->leftChild,setOfValueOfVariables) - comp(node->righChild,setOfValueOfVariables);
                 case 's':
-                    return sin((comp(node->leftChild)*PI)/180);
+                    return sin((comp(node->leftChild,setOfValueOfVariables)*PI)/180);
                 case 'c':
-                    return cos((comp(node->leftChild)*PI)/180);
+                    return cos((comp(node->leftChild,setOfValueOfVariables)*PI)/180);
             }
         }else{
-            return stoi(node->value);
+            if(isNumber(node->value))return stoi(node->value);
+            else{
+                set<double>::iterator it= setOfValueOfVariables.begin();
+                setOfValueOfVariables.erase(it);
+                return *it;
+            }
         }
     }
 }
 
 double CTree::computeTree(){
-    return comp(root);
+    set<double> setOfValueOfVariables = getValuesFromUser();
+    return comp(root,setOfValueOfVariables);
 }
 
+bool CTree::isNumber(string valueToCheck){
+    bool isNumber = true;
+
+    for (int i = 0; i < valueToCheck.length(); ++i) {
+        if(!isdigit(valueToCheck[0])) isNumber = false;
+    }
+    return isNumber;
+}
+
+set<double> CTree::getValuesFromUser(){
+    set<double> values;
+
+    set<string> setOfVariables = getVariables();
+
+    for (int i = 0; i < setOfVariables.size() ; ++i) {
+        double numberFromUser;
+        cout << "podaj wartosc dla zmiennej"<<endl;
+        cin >> numberFromUser;
+        values.insert(numberFromUser);
+    }
+    return values;
+}
 
 
 bool CTree::isOperator(string valueToCheck){
