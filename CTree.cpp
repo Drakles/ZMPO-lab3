@@ -6,6 +6,8 @@
 #include <set>
 #include "CTree.h"
 #include <math.h>
+#include <cctype>
+
 
 void printPostOrder(CNode *pNode);
 
@@ -44,35 +46,66 @@ CTree::CTree(){
     root = nullptr;
 }
 
+
 void CTree::createTree(string &expr){
-    if(root == nullptr) {
-        this->root = new CNode(expr.substr(0, 1), root);
-        expr = expr.substr(1, expr.length());
-        createTree(root,root,expr);
+        while(expr[0] == ' '){
+            expr = expr.substr(1, expr.length());
+        }
+
+    expr = expr.append(" ");
+
+    if(isOperator(expr[0]) || isOperatorSinOrCos(expr.substr(0,3))) {
+
+        if (expr.substr(0, 3) == "sin" || expr.substr(0, 3) == "cos") {
+            this->root = new CNode(expr.substr(0, 3), root);
+            expr = expr.substr(3, expr.length());
+            createTree(root, root, expr);
+        } else {
+
+            this->root = new CNode(expr.substr(0, 1), root);
+            expr = expr.substr(1, expr.length());
+            createTree(root, root, expr);
+        }
     }else{
-        createTree(root,root,expr);
+        this->root = new CNode(expr,root);
     }
 }
-
 
 void CTree::createTree(CNode *&actualNode,CNode *&parentNode,string &expr){
 
     if(expr.length() > 0) {
         if (actualNode == nullptr) {
 
+            while(expr[0] == ' '){
+                expr = expr.substr(1, expr.length());
+            }
+
             if(expr.substr(0,3) == "sin" || expr.substr(0,3) == "cos" ){
                 actualNode = new CNode(expr.substr(0, 3), parentNode);
                 expr = expr.substr(3, expr.length());
             }else {
-                actualNode = new CNode(expr.substr(0, 1), parentNode);
+
+                string clearValue ="";
+
+                clearValue.append(expr.substr(0,1));
+
                 expr = expr.substr(1, expr.length());
+
+                while (!isspace(expr.at(0)) && expr.length() > 0) {
+                    clearValue.append(expr.substr(0, 1));
+                    expr = expr.substr(1, expr.length());
+                }
+
+                actualNode = new CNode(clearValue, parentNode);
             }
         }
         if (isOperator(actualNode->value)) {
 
+
             if(isOperatorSinOrCos(actualNode->value)){ // if value is sin or cos
                 if(actualNode->leftChild == nullptr) createTree(actualNode->leftChild,actualNode,expr);
             }else {
+
                 // if value is operator but not cos or sin then it should has two children
                 if (actualNode->leftChild == nullptr) {
                     createTree(actualNode->leftChild, actualNode, expr);
@@ -98,15 +131,9 @@ CNode*& CTree::findNodeToAttachedTree(CNode *&node){
 
 CTree& CTree::operator+(CTree &otherTree){
 
-    //b+a
-
     CTree ct;
 
     ct.root = this->root;
-
-//    cout << "value of other tree = "<<otherTree.root->value << endl; // a
-//
-//    cout << "value of this.root = " << this->root->value << endl; // b
 
     //ct.findNodeToAttachedTree(ct.root)->value="1234";
 
@@ -127,19 +154,6 @@ CTree & CTree::operator=(CTree &t){
     return *this;
 }
 
-void CTree::printInOrder(CNode *node){
-    if(node->leftChild != nullptr){
-        printInOrder(node->leftChild);
-    }
-    cout <<node->value;
-    if(node->righChild != nullptr){
-        printInOrder(node->righChild);
-    }
-}
-
-void CTree::printInOrder(){
-    printInOrder(root);
-}
 
 void CTree::getStringInNormalNotation(CNode *node, string &outputString){
     if(node->leftChild != nullptr) getStringInNormalNotation(node->leftChild,outputString);
@@ -153,25 +167,72 @@ string CTree::getStringInNormalNotation(){
     return output;
 }
 
-std::set<char> CTree::getVariables(){
+void CTree::getVariables(CNode *node, set<string> &setOfVariables){
 
-    string expr = getStringInNormalNotation();
+//    while(!isspace(expr.at(expr.length()))) {
+//
+//        string value = "";
+//
+//        while (expr[0] == ' ') {
+//            expr = expr.substr(1, expr.length());
+//        }
+//
+//        while (!isspace(expr.at(0)) && expr.length() > 1) {
+//
+//            value.append(expr.substr(0,1));
+//            expr = expr.substr(1, expr.length());
+//
+//        }
+//            if (!isOperator(value) && setOfVariables.count(value) == 0) {
+//                setOfVariables.insert(value);
+//            }
+//    }
 
-    set<char> setOfVariables;
+    cout << "wszedlem do getVariables aktualny node.value to= "<<node->value<<"a setOfVariables=";
+    set<string>::iterator it;
 
-    for (int i = 0; i < expr.length() ; ++i) {
-        if(!isOperator(expr[i]) && setOfVariables.count(expr[i])==0){
-            setOfVariables.insert(expr[i]);
-        }
+    for (it = setOfVariables.begin(); it!=setOfVariables.end() ; it++) {
+        cout << *it << ",";
     }
+
+    if(node->leftChild != nullptr){
+        getVariables(node->leftChild,setOfVariables);
+    }
+
+    if(!isOperator(node->value)){
+        cout << "dodaje value do set"<<endl;
+        setOfVariables.insert(node->value);
+    }
+    if(node->righChild != nullptr){
+        getVariables(node->righChild,setOfVariables);
+    }
+}
+
+set<string> CTree::getVariables(){
+    set<string> setOfVariables;
+
+    cout <<"jestem w getVariables() i wywoluje na roocie getVariables"<<endl;
+    getVariables(root,setOfVariables);
+
     return setOfVariables;
 }
 
-void CTree::printVariables(){
+void CTree::printInOrder(CNode *node){
+    if(node->leftChild != nullptr){
+        printInOrder(node->leftChild);
+    }
+    cout <<node->value;
+    if(node->righChild != nullptr){
+        printInOrder(node->righChild);
+    }
+}
 
-    set<char> setOfVariables = getVariables();
+void CTree::printInOrder(){
+    printInOrder(root);
+}
+void CTree::printVariables(set<string> setOfVariables){
 
-    set<char>::iterator it;
+    set<string>::iterator it;
 
     for (it = setOfVariables.begin(); it!=setOfVariables.end() ; it++) {
         cout << *it << ",";
@@ -206,9 +267,9 @@ double CTree::comp(CNode *node){
                 case '-':
                     return comp(node->leftChild) - comp(node->righChild);
                 case 's':
-                    return sin(comp(node->leftChild));
+                    return sin((comp(node->leftChild)*PI)/180);
                 case 'c':
-                    return cos(comp(node->leftChild));
+                    return cos((comp(node->leftChild)*PI)/180);
             }
         }else{
             return stoi(node->value);
@@ -219,6 +280,7 @@ double CTree::comp(CNode *node){
 double CTree::computeTree(){
     return comp(root);
 }
+
 
 
 bool CTree::isOperator(string valueToCheck){

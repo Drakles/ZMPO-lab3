@@ -8,6 +8,7 @@
 #include <string>
 #include <set>
     using namespace std;
+#define PI 3.14159265
 
 class CTree {
 
@@ -26,6 +27,9 @@ public:
     CTree & operator=(CTree &t);
     CTree& operator+(CTree &tree);
     double computeTree();
+    set<string> getVariables(string expr);
+    void printVariables(set<string> setOfVariables);
+    set<string> getVariables();
 private:
     CNode *root;
     void printBinaryTree(CNode *node, int level);
@@ -35,12 +39,18 @@ private:
     void printInOrder(CNode *node);
     void getStringInNormalNotation(CNode *node, string &outputString);
     bool isOperator(char valueToCheck);
-    std::set<char> getVariables();
     void printPostOrder(CNode *node);
     CNode *&findNodeToAttachedTree(CNode *&node);
     double comp(CNode *node);
 
     bool isOperatorSinOrCos(string operatorToCheck);
+
+
+    void getVariables(CNode *node, set<string> &setOfVariables);
+
+    //set<string> &*getVariables(CNode *node, set<string> *&setOfVariables);
+
+    //set<string> &*getVariables(CNode *node, set<string> &*setOfVariables);
 };
 
 #endif //LISTA3_CTREE_H
