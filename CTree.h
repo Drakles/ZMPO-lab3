@@ -10,32 +10,33 @@
 using namespace std;
 #define PI 3.14159265
 
-static const int NUM_VAR_AND_NUM_OP_IS_CORRECT = 1;
+const int NUM_VAR_AND_NUM_OP_IS_CORRECT = 1;
 
-static const char SPACE_CHAR = ' ';
-static const string SPACE_STRING = " ";
+const char SPACE_CHAR = ' ';
+const string SPACE_STRING = " ";
 
-static const string EXPR_WRONG = "wyrazenie do wczytania drzewa jest błędne";
-static const string EXPR_REBUILD_MSG = "drzewo zostanie utworzone na podstawie wyrazenia: ";
+const string EXPR_WRONG = "wyrazenie do wczytania drzewa jest błędne";
+const string EXPR_REBUILD_MSG = "drzewo zostanie utworzone na podstawie wyrazenia: ";
 
-static const char MULTPL_CHAR ='*';
-static const char DVSIN_CHAR = '/';
-static const char ADD_CHAR = '+';
-static const char SBSTR_CHAR = '-';
-static const string MULTPL_STRING ="*";
-static const string DVSIN_STRING = "/";
-static const string ADD_STRING = "+";
-static const string SBSTR_STRING = "-";
+const char MULTPL_CHAR ='*';
+const char DVSIN_CHAR = '/';
+const char ADD_CHAR = '+';
+const char SBSTR_CHAR = '-';
+const string MULTPL_STRING ="*";
+const string DVSIN_STRING = "/";
+const string ADD_STRING = "+";
+const string SBSTR_STRING = "-";
 
-static const char S = 's';
-static const char C = 'c';
-static const string SIN = "sin";
-static const string COS = "cos";
+const char S = 's';
+const char C = 'c';
+const string SIN = "sin";
+const string COS = "cos";
 
-static const string GET_VALUE = "podaj wartosc dla zmiennej";
-static const string ONE = "1";
+const string GET_VALUE = "podaj wartosc dla zmiennej";
+const string ONE = "1";
 
-
+const int STRING_INCORRECT = -1;
+const int CREATE_TREE_SUCCES = 0;
 
 class CTree {
 
@@ -46,7 +47,7 @@ public:
     CTree();
 
 
-    void createTree(string &expr);
+    int createTree(string &expr);
 
     void printAsTree();
     void printInOrder();
@@ -62,6 +63,7 @@ public:
 
     int isExprCorrect(string expr);
 
+    void makeStringCorrect(string &expr);
 private:
     CNode *root;
 
@@ -81,7 +83,6 @@ private:
     void getVariables(CNode *node, set<string> &setOfVariables);
     set<double> getValuesFromUser();
 
-    void makeStringCorrect(string &expr);
 
     CNode *&findNodeToAttachedTree(CNode *&node);
 };

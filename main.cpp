@@ -7,7 +7,7 @@ int main() {
 
     CTree a;
 
-    string s = "+ + + 1 1 2 1 1 2324 a";
+    string s = "+ + ";
 
     a.createTree(s);
 

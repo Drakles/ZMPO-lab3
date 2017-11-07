@@ -13,7 +13,7 @@ CTree::CTree(){
     root = nullptr;
 }
 
-void CTree::createTree(string &expr){
+int CTree::createTree(string &expr){
 
     if(isExprCorrect(expr) == NUM_VAR_AND_NUM_OP_IS_CORRECT) {
 
@@ -29,21 +29,22 @@ void CTree::createTree(string &expr){
                 this->root = new CNode(expr.substr(0, 3), root);
                 expr = expr.substr(3, expr.length());
                 createTree(root, root, expr);
+                return CREATE_TREE_SUCCES;
             } else {
 
                 this->root = new CNode(expr.substr(0, 1), root);
                 expr = expr.substr(1, expr.length());
                 createTree(root, root, expr);
+                return CREATE_TREE_SUCCES;
             }
         } else {
             this->root = new CNode(expr, root);
+            return CREATE_TREE_SUCCES;
         }
     }else{
-        cout << EXPR_WRONG << endl;
-
         makeStringCorrect(expr);
-        cout << EXPR_REBUILD_MSG<<expr<<endl;
         createTree(expr);
+        return STRING_INCORRECT;
     }
 }
 
