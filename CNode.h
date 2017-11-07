@@ -11,16 +11,17 @@ class CNode {
 
     friend class CTree;
 
-
 public:
     CNode(const std::string &value, CNode *parent);
+    std::string toString();
+    CNode & operator=(CNode &otherNode);
+
+private:
     CNode *parent;
     CNode *righChild;
     std::string value;
     CNode *leftChild;
 
-    std::string toString();
-    CNode & operator=(CNode &otherNode);
 };
 
 

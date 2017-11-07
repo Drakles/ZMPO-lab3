@@ -5,23 +5,15 @@ int main() {
 
     using namespace std;
 
+    CTree a;
 
-
-    CTree a,b;
-
-    string s = "+*22cos0";
+    string s = "+ + + 1 1 2 1 1 2324 a";
 
     a.createTree(s);
 
-    cout << "Drzewo pierwsze" << endl;
+    cout << a.computeTree() << endl;
 
     a.printAsTree();
-
-    a.printPostOrder();
-    cout << endl;
-
-    a.printInOrder();
-
 
 
 }

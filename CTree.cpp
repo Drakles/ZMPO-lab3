@@ -6,70 +6,47 @@
 #include <set>
 #include "CTree.h"
 #include <math.h>
-#include <cctype>
-
-
-void printPostOrder(CNode *pNode);
 
 using namespace std;
-
-void CTree::printBinaryTree(CNode *node, int level) {
-    if (node == nullptr) {
-        return;
-    }
-    printBinaryTree(node->righChild, level + 1);
-    if (level != 0) {
-        for (int i = 0; i < level - 1; i++)
-            std::cout << "|\t\t";
-        std::cout << "|-------" << node->value << endl;
-    } else
-        std::cout << node->value << endl;
-    printBinaryTree(node->leftChild, level + 1);
-}
-
-void CTree::printAsTree() {
-    printBinaryTree(root, 0);
-}
-
-int CTree::nodes() {
-    return this->nodes(this->root);
-}
-
-int CTree::nodes(CNode *node) {
-    int numberOfNodes = 1;
-    if (node->righChild != nullptr) numberOfNodes += nodes(node->righChild);
-    if (node->leftChild != nullptr) numberOfNodes += nodes(node->leftChild);
-    return numberOfNodes;
-}
 
 CTree::CTree(){
     root = nullptr;
 }
 
-
 void CTree::createTree(string &expr){
-        while(expr[0] == ' '){
+
+    if(isExprCorrect(expr) == NUM_VAR_AND_NUM_OP_IS_CORRECT) {
+
+        while (expr[0] == ' ') {
             expr = expr.substr(1, expr.length());
         }
 
-    expr = expr.append(" ");
+        expr = expr.append(" ");
 
-    if(isOperator(expr[0]) || isOperatorSinOrCos(expr.substr(0,3))) {
+        if (isOperatorButNotSinOrCos(expr[0]) || isOperatorSinOrCos(expr.substr(0, 3))) {
 
-        if (expr.substr(0, 3) == "sin" || expr.substr(0, 3) == "cos") {
-            this->root = new CNode(expr.substr(0, 3), root);
-            expr = expr.substr(3, expr.length());
-            createTree(root, root, expr);
+            if (expr.substr(0, 3) == "sin" || expr.substr(0, 3) == "cos") {
+                this->root = new CNode(expr.substr(0, 3), root);
+                expr = expr.substr(3, expr.length());
+                createTree(root, root, expr);
+            } else {
+
+                this->root = new CNode(expr.substr(0, 1), root);
+                expr = expr.substr(1, expr.length());
+                createTree(root, root, expr);
+            }
         } else {
-
-            this->root = new CNode(expr.substr(0, 1), root);
-            expr = expr.substr(1, expr.length());
-            createTree(root, root, expr);
+            this->root = new CNode(expr, root);
         }
     }else{
-        this->root = new CNode(expr,root);
+        cout << "string nie jest ok"<< endl;
+
+        makeStringCorrect(expr);
+        cout << "drzewo zostanie utworzone na podstawie wyrazenia"<<expr<<endl;
+        createTree(expr);
     }
 }
+
 
 void CTree::createTree(CNode *&actualNode,CNode *&parentNode,string &expr){
 
@@ -120,14 +97,23 @@ void CTree::createTree(CNode *&actualNode,CNode *&parentNode,string &expr){
     }
 }
 
-CNode*& CTree::findNodeToAttachedTree(CNode *&node){
-    if(node->leftChild != nullptr) findNodeToAttachedTree(node->leftChild);
-    else{
-        return node;
+void CTree::printBinaryTree(CNode *node, int level) {
+    if (node == nullptr) {
+        return;
     }
+    printBinaryTree(node->righChild, level + 1);
+    if (level != 0) {
+        for (int i = 0; i < level - 1; i++)
+            std::cout << "|\t\t";
+        std::cout << "|-------" << node->value << endl;
+    } else
+        std::cout << node->value << endl;
+    printBinaryTree(node->leftChild, level + 1);
 }
 
-
+void CTree::printAsTree() {
+    printBinaryTree(root, 0);
+}
 
 CTree& CTree::operator+(CTree &otherTree){
 
@@ -154,19 +140,6 @@ CTree & CTree::operator=(CTree &t){
     return *this;
 }
 
-
-void CTree::getStringInNormalNotation(CNode *node, string &outputString){
-    if(node->leftChild != nullptr) getStringInNormalNotation(node->leftChild,outputString);
-    outputString.append(node->value);
-    if(node->righChild != nullptr) getStringInNormalNotation(node->righChild,outputString);
-}
-
-string CTree::getStringInNormalNotation(){
-    string output = "";
-    getStringInNormalNotation(root,output);
-    return output;
-}
-
 void CTree::getVariables(CNode *node, set<string> &setOfVariables){
 
     set<string>::iterator it;
@@ -190,42 +163,6 @@ set<string> CTree::getVariables(){
 
     return setOfVariables;
 }
-
-void CTree::printInOrder(CNode *node){
-    if(node->leftChild != nullptr){
-        printInOrder(node->leftChild);
-    }
-    cout <<node->value;
-    if(node->righChild != nullptr){
-        printInOrder(node->righChild);
-    }
-}
-
-void CTree::printInOrder(){
-    printInOrder(root);
-}
-void CTree::printVariables(set<string> setOfVariables){
-
-    set<string>::iterator it;
-
-    for (it = setOfVariables.begin(); it!=setOfVariables.end() ; it++) {
-        cout << *it << ",";
-    }
-    cout << endl;
-}
-
-
-void CTree::printPostOrder(){
-    printPostOrder(root);
-}
-
-void CTree::printPostOrder(CNode *node) {
-    cout << node->value;
-
-    if(node->leftChild != nullptr) printPostOrder(node->leftChild);
-    if(node->righChild != nullptr) printPostOrder(node->righChild);
-}
-
 
 double CTree::comp(CNode *node,set<double> &setOfValueOfVariables){
     if(node != nullptr) {
@@ -261,6 +198,7 @@ double CTree::computeTree(){
     return comp(root,setOfValueOfVariables);
 }
 
+
 bool CTree::isNumber(string valueToCheck){
     bool isNumber = true;
 
@@ -284,16 +222,104 @@ set<double> CTree::getValuesFromUser(){
     return values;
 }
 
+int CTree::isExprCorrect(string expr){
+    int numberOfOperators = 0;
+    int numberOfVariables = 0;
+
+    expr.append(" ");
+
+    while(expr.length()>1){
+
+        while(expr[0] == ' ' && expr.length() > 2){
+            expr = expr.substr(1, expr.length());
+        }
+        if(isOperatorButNotSinOrCos(expr.at(0))) {
+            numberOfOperators++;
+            expr = expr.substr(1, expr.length());
+        }else {
+            if (isOperatorSinOrCos(expr.substr(0, 3))) {
+                numberOfOperators++;
+                expr = expr.substr(3, expr.length());
+            } else {
+                numberOfVariables++;
+                expr = expr.substr(1, expr.length());
+            }
+        }
+    }
+    return (numberOfVariables-numberOfOperators);
+}
+
+void CTree::makeStringCorrect(string &expr){
+
+    if(isExprCorrect(expr) < NUM_VAR_AND_NUM_OP_IS_CORRECT) {
+        while (isExprCorrect(expr) != NUM_VAR_AND_NUM_OP_IS_CORRECT) {
+            expr.append(" ");
+            expr.append("1");
+        }
+    }else{
+        while (isExprCorrect(expr) != NUM_VAR_AND_NUM_OP_IS_CORRECT) {
+            expr= expr.substr(0,expr.length()-1);
+        }
+    }
+}
+
 
 bool CTree::isOperator(string valueToCheck){
     return (valueToCheck == "*" || valueToCheck == "/" || valueToCheck == "+" || valueToCheck == "-"
             || valueToCheck == "sin" || valueToCheck == "cos");
 }
 
-bool CTree::isOperator(char valueToCheck){
+bool CTree::isOperatorButNotSinOrCos(char valueToCheck){
     return (valueToCheck =='*' || valueToCheck == '/' || valueToCheck == '+' || valueToCheck == '-');
 }
 
 bool CTree::isOperatorSinOrCos(string operatorToCheck){
     return (operatorToCheck == "sin" || operatorToCheck =="cos");
+}
+
+CNode*& CTree::findNodeToAttachedTree(CNode *&node){
+    if(node->leftChild != nullptr) findNodeToAttachedTree(node->leftChild);
+    else{
+        return node;
+    }
+}
+
+
+
+/* PRINTING FUNCTIONS ------------------------------------------------------------------------------------------------*/
+
+
+void CTree::printInOrder(CNode *node){
+    if(node->leftChild != nullptr){
+        printInOrder(node->leftChild);
+    }
+    cout <<node->value;
+    if(node->righChild != nullptr){
+        printInOrder(node->righChild);
+    }
+}
+
+void CTree::printInOrder(){
+    printInOrder(root);
+}
+
+void CTree::printVariables(set<string> setOfVariables){
+
+    set<string>::iterator it;
+
+    for (it = setOfVariables.begin(); it!=setOfVariables.end() ; it++) {
+        cout << *it << ",";
+    }
+    cout << endl;
+}
+void CTree::printPostOrder(){
+    printPostOrder(root);
+}
+
+
+void CTree::printPostOrder(CNode *node) {
+    cout << node->value;
+
+    if(node->leftChild != nullptr) printPostOrder(node->leftChild);
+    if(node->righChild != nullptr) printPostOrder(node->righChild);
 }
