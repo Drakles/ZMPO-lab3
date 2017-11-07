@@ -24,9 +24,6 @@ CNode &CNode::operator=(CNode &otherNode) {
     parent = otherNode.parent;
     leftChild = otherNode.leftChild;
     righChild = otherNode.righChild;
-
-    cout << "wywoluje operator = " << endl;
-
     return *this;
 }
 

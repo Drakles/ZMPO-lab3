@@ -7,9 +7,35 @@
 #include "CNode.h"
 #include <string>
 #include <set>
-    using namespace std;
+using namespace std;
 #define PI 3.14159265
-const int NUM_VAR_AND_NUM_OP_IS_CORRECT = 1;
+
+static const int NUM_VAR_AND_NUM_OP_IS_CORRECT = 1;
+
+static const char SPACE_CHAR = ' ';
+static const string SPACE_STRING = " ";
+
+static const string EXPR_WRONG = "wyrazenie do wczytania drzewa jest błędne";
+static const string EXPR_REBUILD_MSG = "drzewo zostanie utworzone na podstawie wyrazenia: ";
+
+static const char MULTPL_CHAR ='*';
+static const char DVSIN_CHAR = '/';
+static const char ADD_CHAR = '+';
+static const char SBSTR_CHAR = '-';
+static const string MULTPL_STRING ="*";
+static const string DVSIN_STRING = "/";
+static const string ADD_STRING = "+";
+static const string SBSTR_STRING = "-";
+
+static const char S = 's';
+static const char C = 'c';
+static const string SIN = "sin";
+static const string COS = "cos";
+
+static const string GET_VALUE = "podaj wartosc dla zmiennej";
+static const string ONE = "1";
+
+
 
 class CTree {
 

@@ -17,15 +17,15 @@ void CTree::createTree(string &expr){
 
     if(isExprCorrect(expr) == NUM_VAR_AND_NUM_OP_IS_CORRECT) {
 
-        while (expr[0] == ' ') {
+        while (expr[0] == SPACE_CHAR) {
             expr = expr.substr(1, expr.length());
         }
 
-        expr = expr.append(" ");
+        expr = expr.append(SPACE_STRING);
 
         if (isOperatorButNotSinOrCos(expr[0]) || isOperatorSinOrCos(expr.substr(0, 3))) {
 
-            if (expr.substr(0, 3) == "sin" || expr.substr(0, 3) == "cos") {
+            if (expr.substr(0, 3) == SIN || expr.substr(0, 3) == COS) {
                 this->root = new CNode(expr.substr(0, 3), root);
                 expr = expr.substr(3, expr.length());
                 createTree(root, root, expr);
@@ -39,10 +39,10 @@ void CTree::createTree(string &expr){
             this->root = new CNode(expr, root);
         }
     }else{
-        cout << "string nie jest ok"<< endl;
+        cout << EXPR_WRONG << endl;
 
         makeStringCorrect(expr);
-        cout << "drzewo zostanie utworzone na podstawie wyrazenia"<<expr<<endl;
+        cout << EXPR_REBUILD_MSG<<expr<<endl;
         createTree(expr);
     }
 }
@@ -53,11 +53,11 @@ void CTree::createTree(CNode *&actualNode,CNode *&parentNode,string &expr){
     if(expr.length() > 0) {
         if (actualNode == nullptr) {
 
-            while(expr[0] == ' '){
+            while(expr[0] == SPACE_CHAR){
                 expr = expr.substr(1, expr.length());
             }
 
-            if(expr.substr(0,3) == "sin" || expr.substr(0,3) == "cos" ){
+            if(expr.substr(0,3) == SIN || expr.substr(0,3) == COS ){
                 actualNode = new CNode(expr.substr(0, 3), parentNode);
                 expr = expr.substr(3, expr.length());
             }else {
@@ -169,17 +169,17 @@ double CTree::comp(CNode *node,set<double> &setOfValueOfVariables){
         if (isOperator(node->value)) {
 
             switch(node->value.at(0)){
-                case '*':
+                case MULTPL_CHAR:
                     return comp(node->leftChild,setOfValueOfVariables) * comp(node->righChild,setOfValueOfVariables);
-                case '/':
+                case DVSIN_CHAR:
                     return comp(node->leftChild,setOfValueOfVariables) / comp(node->righChild,setOfValueOfVariables);
-                case '+':
+                case ADD_CHAR:
                     return comp(node->leftChild,setOfValueOfVariables) + comp(node->righChild,setOfValueOfVariables);
-                case '-':
+                case SBSTR_CHAR:
                     return comp(node->leftChild,setOfValueOfVariables) - comp(node->righChild,setOfValueOfVariables);
-                case 's':
+                case S:
                     return sin((comp(node->leftChild,setOfValueOfVariables)*PI)/180);
-                case 'c':
+                case C:
                     return cos((comp(node->leftChild,setOfValueOfVariables)*PI)/180);
             }
         }else{
@@ -215,7 +215,7 @@ set<double> CTree::getValuesFromUser(){
 
     for (int i = 0; i < setOfVariables.size() ; ++i) {
         double numberFromUser;
-        cout << "podaj wartosc dla zmiennej"<<endl;
+        cout << GET_VALUE<<endl;
         cin >> numberFromUser;
         values.insert(numberFromUser);
     }
@@ -226,11 +226,11 @@ int CTree::isExprCorrect(string expr){
     int numberOfOperators = 0;
     int numberOfVariables = 0;
 
-    expr.append(" ");
+    expr.append(SPACE_STRING);
 
     while(expr.length()>1){
 
-        while(expr[0] == ' ' && expr.length() > 2){
+        while(expr[0] == SPACE_CHAR && expr.length() > 2){
             expr = expr.substr(1, expr.length());
         }
         if(isOperatorButNotSinOrCos(expr.at(0))) {
@@ -253,8 +253,8 @@ void CTree::makeStringCorrect(string &expr){
 
     if(isExprCorrect(expr) < NUM_VAR_AND_NUM_OP_IS_CORRECT) {
         while (isExprCorrect(expr) != NUM_VAR_AND_NUM_OP_IS_CORRECT) {
-            expr.append(" ");
-            expr.append("1");
+            expr.append(SPACE_STRING);
+            expr.append(ONE);
         }
     }else{
         while (isExprCorrect(expr) != NUM_VAR_AND_NUM_OP_IS_CORRECT) {
@@ -265,16 +265,16 @@ void CTree::makeStringCorrect(string &expr){
 
 
 bool CTree::isOperator(string valueToCheck){
-    return (valueToCheck == "*" || valueToCheck == "/" || valueToCheck == "+" || valueToCheck == "-"
-            || valueToCheck == "sin" || valueToCheck == "cos");
+    return (valueToCheck ==MULTPL_STRING || valueToCheck == DVSIN_STRING || valueToCheck == ADD_STRING || valueToCheck == SBSTR_STRING
+            || valueToCheck == SIN || valueToCheck == COS);
 }
 
 bool CTree::isOperatorButNotSinOrCos(char valueToCheck){
-    return (valueToCheck =='*' || valueToCheck == '/' || valueToCheck == '+' || valueToCheck == '-');
+    return (valueToCheck ==MULTPL_CHAR || valueToCheck == DVSIN_CHAR || valueToCheck == ADD_CHAR || valueToCheck == SBSTR_CHAR);
 }
 
 bool CTree::isOperatorSinOrCos(string operatorToCheck){
-    return (operatorToCheck == "sin" || operatorToCheck =="cos");
+    return (operatorToCheck == SIN || operatorToCheck ==COS);
 }
 
 CNode*& CTree::findNodeToAttachedTree(CNode *&node){
