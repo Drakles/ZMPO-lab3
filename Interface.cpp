@@ -12,6 +12,7 @@ bool isCommand(const string command, const char *mnemonic) {
 
 
 int main(){
+
     CTree a;
     string s = " * 3 4 ";
     int result = a.createTree(s);

@@ -112,25 +112,25 @@ void CTree::createTree(CNode *&actualNode,CNode *&parentNode,string &expr){
     }
 }
 
-CTree& CTree::operator+(CTree &otherTree){
+CTree CTree::operator+(CTree &otherTree){
 
     cout <<"wszledme do operatora+"<<endl;
-    CTree *ct = new CTree();
-    ct->tmp = true;
+    CTree ct;
+   // ct->tmp = true;
     cout <<"stworzylem ct i ustawilem tmp true"<<endl;
-    *ct->root = *this->root;
+    ct.root = this->root;
     cout <<"wykonalem ct->root = this->root"<<endl;
     CNode * p;
-    *p = *ct->root;
+    *p = *ct.root;
     cout <<"stworzylem wskaznik p ustawilem go *p = *ct->root"<<endl;
     while (p->leftChild->leftChild != nullptr){
         p = p->leftChild;
     }
     *p->leftChild = *otherTree.root;
 
-    if(otherTree.tmp) delete &otherTree;
+    //if(otherTree.tmp) delete &otherTree;
     cout <<"jestem przed zwroceniem *ct"<<endl;
-    return *ct;
+    return ct;
 }
 
 CTree & CTree::operator=(CTree &t){

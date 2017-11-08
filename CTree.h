@@ -64,7 +64,7 @@ public:
     set<string> getVariables();
 
     CTree & operator=(CTree &t);
-    CTree & operator+(CTree &tree);
+    CTree operator+(CTree &tree);
 
     double computeTree(set<double> setOfValueOfVariables);
 
