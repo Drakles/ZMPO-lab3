@@ -15,11 +15,12 @@ public:
     CNode(const std::string &value, CNode *parent);
     std::string toString();
     CNode & operator=(CNode &otherNode);
+    ~CNode();
 
 private:
+    std::string value;
     CNode *parent;
     CNode *righChild;
-    std::string value;
     CNode *leftChild;
 
 };

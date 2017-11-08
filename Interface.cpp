@@ -10,7 +10,32 @@ bool isCommand(const string command, const char *mnemonic) {
     return command==mnemonic;
 }
 
-int main() {
+
+int main(){
+    CTree a;
+    string s = " * 3 4 ";
+    int result = a.createTree(s);
+    cout << result<<endl;
+    cout << a.printAsTree()<<endl;
+
+    string s1 = "+ 1 2";
+    CTree b;
+    int result1 = b.createTree(s1);
+    cout <<result1<<endl;
+    cout << b.printAsTree()<<endl;
+    b=a;
+
+    cout << b.printAsTree() << endl;
+    cout << "jestem przed b = a+b"<<endl;
+    b = a+b;
+    cout << b.printAsTree() << endl;
+
+
+}
+
+
+
+int main1() {
 
     CTree tree;
 
@@ -28,10 +53,6 @@ int main() {
         std::stringstream stream(line);
         stream >> command;
 
-        // copy line on output with exclamation mark
-        //cout << "!" << line << endl;;
-        //cout << "command " << command << endl;
-
         if(isCommand(command,EXIT)) {
             endOfProgram = true;
             wrongArgument = false;
@@ -42,14 +63,18 @@ int main() {
 
             string exprFromUser;
 
-            cin >> exprFromUser;
+            getline(cin,exprFromUser);
+
+            string copyOfInput = exprFromUser;
 
             int result = tree.createTree(exprFromUser);
 
             if(result == CREATE_TREE_SUCCES){
                 cout << CREATE_TREE_SUCCES_MESSAGE << endl;
             }else{
-                cout << EXPR_WRONG << endl << EXPR_REBUILD_MSG << exprFromUser << endl;
+                cout << EXPRESSION << copyOfInput <<EXPR_WRONG << endl<<EXPR_REBUILD_MSG;
+                cout << tree.printPostOrder() << endl;
+
             }
         }
 
@@ -57,28 +82,52 @@ int main() {
             wrongArgument = false;
 
             tree.printVariables(tree.getVariables());
-
         }
 
         if(isCommand(command,PRINT)) {
             wrongArgument = false;
 
-            tree.printInOrder();
+            cout << tree.printInOrder() << endl;
 
         }
 
         if(isCommand(command,COMP)) {
             wrongArgument = false;
 
-            // TO DO
+            set<double> values;
 
+            set<string> setOfVariables = tree.getVariables();
+
+            double numberFromUser;
+            for (int i = 0; i < setOfVariables.size() ; ++i) {
+                cin >> numberFromUser;
+                values.insert(numberFromUser);
+            }
+            cout << tree.computeTree(values) << endl;
         }
 
         if(isCommand(command,JOIN)) {
             wrongArgument = false;
 
-            // TO DO
+            string exprFromUser;
 
+            getline(cin,exprFromUser);
+
+            CTree newTree;
+
+            int result = newTree.createTree(exprFromUser);
+
+            if(result == CREATE_TREE_SUCCES){
+                cout << CREATE_TREE_SUCCES_MESSAGE << endl;
+            }else{
+                cout << EXPR_WRONG << endl << EXPR_REBUILD_MSG << exprFromUser << endl;
+            }
+            tree = tree + newTree;
+        }
+
+        if(isCommand(command,PRINTASTREE)) {
+            wrongArgument = false;
+            cout << tree.printAsTree() << endl;
         }
 
         if(wrongArgument){

@@ -20,10 +20,32 @@ std::string CNode::toString(){
 
 CNode &CNode::operator=(CNode &otherNode) {
 
+    parent = this;
+    cout << "wywolalem operator = dla noda o value=" << this->value << endl;
+    cout << "a otherNode value=" << otherNode.value << endl;
     value = otherNode.value;
-    parent = otherNode.parent;
-    leftChild = otherNode.leftChild;
-    righChild = otherNode.righChild;
+    cout << "zmienilem value, teraz this.value=" << this->value << endl;
+    //*parent = *otherNode.parent;
+    if (leftChild != nullptr) {
+    *leftChild = *otherNode.leftChild;
+    leftChild->parent = this;
+        cout <<"zmienilem lewe dziecko"<<endl;
+    }
+    if(righChild != nullptr){
+        *righChild = *otherNode.righChild;
+        righChild->parent = this;
+        cout << "zmienilem prawe dziecko" << endl;
+    }
     return *this;
+}
+
+CNode::~CNode() {
+    cout <<"wywolalem delete CNode"<<endl;
+    if(leftChild != nullptr){
+        delete leftChild;
+    }
+    if(righChild != nullptr) {
+        delete righChild;
+    }
 }
 

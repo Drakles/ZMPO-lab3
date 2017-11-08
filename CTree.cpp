@@ -13,6 +13,18 @@ CTree::CTree(){
     root = nullptr;
 }
 
+CTree::~CTree() {
+    cout <<"wywolalem delete CTRee"<<endl;
+    delete root;
+}
+
+CTree::CTree(CTree &tree){
+    if(root != nullptr){
+     delete root;
+    }
+    *root = *tree.root;
+}
+
 int CTree::createTree(string &expr){
 
     if(isExprCorrect(expr) == NUM_VAR_AND_NUM_OP_IS_CORRECT) {
@@ -42,7 +54,9 @@ int CTree::createTree(string &expr){
             return CREATE_TREE_SUCCES;
         }
     }else{
+        cout << "nie jest ok"<<expr<<endl;
         makeStringCorrect(expr);
+        cout << "poprawione="<<expr<<endl;
         createTree(expr);
         return STRING_INCORRECT;
     }
@@ -98,47 +112,37 @@ void CTree::createTree(CNode *&actualNode,CNode *&parentNode,string &expr){
     }
 }
 
-void CTree::printBinaryTree(CNode *node, int level) {
-    if (node == nullptr) {
-        return;
-    }
-    printBinaryTree(node->righChild, level + 1);
-    if (level != 0) {
-        for (int i = 0; i < level - 1; i++)
-            std::cout << "|\t\t";
-        std::cout << "|-------" << node->value << endl;
-    } else
-        std::cout << node->value << endl;
-    printBinaryTree(node->leftChild, level + 1);
-}
-
-void CTree::printAsTree() {
-    printBinaryTree(root, 0);
-}
-
 CTree& CTree::operator+(CTree &otherTree){
 
-    CTree ct;
-
-    ct.root = this->root;
-
-    //ct.findNodeToAttachedTree(ct.root)->value="1234";
-
+    cout <<"wszledme do operatora+"<<endl;
+    CTree *ct = new CTree();
+    ct->tmp = true;
+    cout <<"stworzylem ct i ustawilem tmp true"<<endl;
+    *ct->root = *this->root;
+    cout <<"wykonalem ct->root = this->root"<<endl;
     CNode * p;
-    p = ct.root;
-
+    *p = *ct->root;
+    cout <<"stworzylem wskaznik p ustawilem go *p = *ct->root"<<endl;
     while (p->leftChild->leftChild != nullptr){
         p = p->leftChild;
     }
+    *p->leftChild = *otherTree.root;
 
-    p->leftChild = otherTree.root;
-
-    return ct;
+    if(otherTree.tmp) delete &otherTree;
+    cout <<"jestem przed zwroceniem *ct"<<endl;
+    return *ct;
 }
 
 CTree & CTree::operator=(CTree &t){
-    root = t.root;
-    return *this;
+    if(root != nullptr) {
+        cout << "wywolalem operator = dla tree" << endl;
+        *root = *t.root;
+        cout << "jestem w operator tree i zwracam *this" << endl;
+
+        if(t.tmp) delete &t;
+
+        return *this;
+    }else cout <<"NIE DA SIE GLUPCZE"<<endl;
 }
 
 void CTree::getVariables(CNode *node, set<string> &setOfVariables){
@@ -194,11 +198,9 @@ double CTree::comp(CNode *node,set<double> &setOfValueOfVariables){
     }
 }
 
-double CTree::computeTree(){
-    set<double> setOfValueOfVariables = getValuesFromUser();
+double CTree::computeTree(set<double> setOfValueOfVariables){
     return comp(root,setOfValueOfVariables);
 }
-
 
 bool CTree::isNumber(string valueToCheck){
     bool isNumber = true;
@@ -209,44 +211,37 @@ bool CTree::isNumber(string valueToCheck){
     return isNumber;
 }
 
-set<double> CTree::getValuesFromUser(){
-    set<double> values;
-
-    set<string> setOfVariables = getVariables();
-
-    for (int i = 0; i < setOfVariables.size() ; ++i) {
-        double numberFromUser;
-        cout << GET_VALUE<<endl;
-        cin >> numberFromUser;
-        values.insert(numberFromUser);
-    }
-    return values;
-}
-
 int CTree::isExprCorrect(string expr){
     int numberOfOperators = 0;
     int numberOfVariables = 0;
 
     expr.append(SPACE_STRING);
+    //cout <<"dodalem spacje na koncu, expr="<<expr<<"|"<<endl;
 
     while(expr.length()>1){
 
-        while(expr[0] == SPACE_CHAR && expr.length() > 2){
+        while(expr[0] == SPACE_CHAR && expr.length() > 1){
             expr = expr.substr(1, expr.length());
+            //cout <<"usunalem zbedna spacje na poczatku, expr="<<expr<<"|"<<endl;
         }
         if(isOperatorButNotSinOrCos(expr.at(0))) {
             numberOfOperators++;
             expr = expr.substr(1, expr.length());
+            //cout <<"zwiekszylem liczbe op, expr="<<expr<<"|"<<endl;
         }else {
             if (isOperatorSinOrCos(expr.substr(0, 3))) {
                 numberOfOperators++;
                 expr = expr.substr(3, expr.length());
-            } else {
+                //cout <<"zwiekszylem liczbe op, expr="<<expr<<"|"<<endl;
+            } else if(!isspace(expr.at(0))){
                 numberOfVariables++;
                 expr = expr.substr(1, expr.length());
+                //cout <<"zwiekszylem liczbe var, expr="<<expr<<"|"<<endl;
             }
         }
     }
+//    cout <<"ilosc operator = "<<numberOfOperators<<endl;
+//    cout <<"ilosc zmiennych lub stalych= "<<numberOfVariables<<endl;
     return (numberOfVariables-numberOfOperators);
 }
 
@@ -264,11 +259,11 @@ void CTree::makeStringCorrect(string &expr){
     }
 }
 
-
 bool CTree::isOperator(string valueToCheck){
-    return (valueToCheck ==MULTPL_STRING || valueToCheck == DVSIN_STRING || valueToCheck == ADD_STRING || valueToCheck == SBSTR_STRING
-            || valueToCheck == SIN || valueToCheck == COS);
+    return (valueToCheck ==MULTPL_STRING || valueToCheck == DVSIN_STRING || valueToCheck == ADD_STRING
+            || valueToCheck == SBSTR_STRING || valueToCheck == SIN || valueToCheck == COS);
 }
+
 
 bool CTree::isOperatorButNotSinOrCos(char valueToCheck){
     return (valueToCheck ==MULTPL_CHAR || valueToCheck == DVSIN_CHAR || valueToCheck == ADD_CHAR || valueToCheck == SBSTR_CHAR);
@@ -285,42 +280,69 @@ CNode*& CTree::findNodeToAttachedTree(CNode *&node){
     }
 }
 
-
-
 /* PRINTING FUNCTIONS ------------------------------------------------------------------------------------------------*/
 
 
-void CTree::printInOrder(CNode *node){
+void CTree::printInOrder(CNode *node,string &output){
     if(node->leftChild != nullptr){
-        printInOrder(node->leftChild);
+        printInOrder(node->leftChild,output);
     }
-    cout <<node->value;
+    output.append(node->value);
+    output.append(SPACE_STRING);
     if(node->righChild != nullptr){
-        printInOrder(node->righChild);
+        printInOrder(node->righChild,output);
     }
 }
 
-void CTree::printInOrder(){
-    printInOrder(root);
+void CTree::printBinaryTree(CNode *node, int level,string &output) {
+    if (node == nullptr) {
+        return;
+    }
+    printBinaryTree(node->righChild, level + 1,output);
+    if (level != 0) {
+        for (int i = 0; i < level - 1; i++)
+            output.append("|\t\t");
+        output.append("|-------");
+        output.append(node->value);
+    } else
+        output.append(node->value);
+        output.append("\n");;
+    printBinaryTree(node->leftChild, level + 1,output);
 }
 
-void CTree::printVariables(set<string> setOfVariables){
+string CTree::printAsTree() {
+    string output = "";
+    printBinaryTree(root, 0,output);
+    return output;
+}
 
+string CTree::printInOrder(){
+    string output= "";
+    printInOrder(root,output);
+   return output;
+}
+
+string CTree::printVariables(set<string> setOfVariables){
+
+    string output = "";
     set<string>::iterator it;
 
     for (it = setOfVariables.begin(); it!=setOfVariables.end() ; it++) {
-        cout << *it << ",";
+        output.append(*it);
+        output.append(",");
     }
-    cout << endl;
 }
-void CTree::printPostOrder(){
-    printPostOrder(root);
+string CTree::printPostOrder(){
+    string output = "";
+    printPostOrder(root,output);
+    return output;
 }
 
 
-void CTree::printPostOrder(CNode *node) {
-    cout << node->value;
+void CTree::printPostOrder(CNode *node,string &output) {
+    output.append(node->value);
+    output.append(SPACE_STRING);
 
-    if(node->leftChild != nullptr) printPostOrder(node->leftChild);
-    if(node->righChild != nullptr) printPostOrder(node->righChild);
+    if(node->leftChild != nullptr) printPostOrder(node->leftChild,output);
+    if(node->righChild != nullptr) printPostOrder(node->righChild,output);
 }
