@@ -9,12 +9,14 @@
 
 class CNode {
 
+    CNode();
+
     friend class CTree;
 
 public:
     CNode(const std::string &value, CNode *parent);
     std::string toString();
-    CNode & operator=(CNode &otherNode);
+    void operator=(CNode &otherNode);
     ~CNode();
 
 private:

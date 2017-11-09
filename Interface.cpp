@@ -16,21 +16,18 @@ int main(){
     CTree a;
     string s = " * 3 4 ";
     int result = a.createTree(s);
-    cout << result<<endl;
     cout << a.printAsTree()<<endl;
 
     string s1 = "+ 1 2";
     CTree b;
     int result1 = b.createTree(s1);
-    cout <<result1<<endl;
     cout << b.printAsTree()<<endl;
-    b=a;
+    //b=a;
 
-    cout << b.printAsTree() << endl;
-    cout << "jestem przed b = a+b"<<endl;
+    //cout << b.printAsTree() << endl;
+    cout << "b = a+b"<<endl;
     b = a+b;
     cout << b.printAsTree() << endl;
-
 
 }
 
@@ -129,6 +126,11 @@ int main1() {
         if(isCommand(command,PRINTASTREE)) {
             wrongArgument = false;
             cout << tree.printAsTree() << endl;
+        }
+
+        if(isCommand(command,PRINT_LEVELS)) {
+            wrongArgument = false;
+            cout << tree.printLevelOrder() << endl;
         }
 
         if(wrongArgument){

@@ -64,7 +64,7 @@ public:
     set<string> getVariables();
 
     CTree & operator=(CTree &t);
-    CTree operator+(CTree &tree);
+    CTree& operator+(CTree &tree);
 
     double computeTree(set<double> setOfValueOfVariables);
 
@@ -72,6 +72,9 @@ public:
     void makeStringCorrect(string &expr);
 
 
+    int height();
+
+    string printLevelOrder();
 private:
 
     CNode *root;
@@ -94,6 +97,10 @@ private:
     void printPostOrder(CNode *node, string &output);
 
     void printBinaryTree(CNode *node, int level, string &output);
+
+    int height(CNode *node);
+
+    void printGivenLevel(CNode *node, int level, string &output);
 };
 
 #endif //LISTA3_CTREE_H

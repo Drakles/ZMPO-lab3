@@ -17,5 +17,6 @@ const char *PRINT = "print";
 const char *COMP = "comp";
 const char *JOIN = "join";
 const char * PRINTASTREE = "printtree";
+const char *PRINT_LEVELS = "printlevels";
 
 #endif //LISTA3_INTERFACE_H

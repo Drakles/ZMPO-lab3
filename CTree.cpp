@@ -112,34 +112,52 @@ void CTree::createTree(CNode *&actualNode,CNode *&parentNode,string &expr){
     }
 }
 
-CTree CTree::operator+(CTree &otherTree){
+CTree& CTree::operator+(CTree &otherTree){
 
-    cout <<"wszledme do operatora+"<<endl;
-    CTree ct;
-   // ct->tmp = true;
-    cout <<"stworzylem ct i ustawilem tmp true"<<endl;
-    ct.root = this->root;
-    cout <<"wykonalem ct->root = this->root"<<endl;
+    CTree *pc_result;
+
+    pc_result = new CTree();
+    pc_result->tmp = true;
+
+    //cout <<"stworzylem ct i ustawilem tmp true"<<endl;
+    //cout << this->root->value << endl;
+    //cout <<"jestem przed *pc_result->root = *this->root" << endl;
+
+    pc_result->root = new CNode();
+    *pc_result->root = *this->root;
+
+    //cout <<"wykonalem ct->root = this->root"<<endl;
+
     CNode * p;
-    *p = *ct.root;
-    cout <<"stworzylem wskaznik p ustawilem go *p = *ct->root"<<endl;
+    p = pc_result->root;
+
+    //cout <<"teraz p wskazuje na roota o wartosci"<<p->value<<endl;
+
+    //cout <<"stworzylem wskaznik p ustawilem go *p = *ct->root"<<endl;
+
     while (p->leftChild->leftChild != nullptr){
         p = p->leftChild;
     }
-    *p->leftChild = *otherTree.root;
+    p->leftChild = otherTree.root;
 
-    //if(otherTree.tmp) delete &otherTree;
-    cout <<"jestem przed zwroceniem *ct"<<endl;
-    return ct;
+    //cout <<"teraz p->lefchild wskazuje na roota other tree, a p->leftChild.value="<<p->leftChild->value<<endl;
+    //cout <<"drzewo wyjsciowe wyglada tak:"<<endl<<pc_result->printAsTree()<<endl;
+
+    return *pc_result;
 }
 
 CTree & CTree::operator=(CTree &t){
     if(root != nullptr) {
         cout << "wywolalem operator = dla tree" << endl;
-        *root = *t.root;
-        cout << "jestem w operator tree i zwracam *this" << endl;
 
-        if(t.tmp) delete &t;
+        cout <<"t wyglada tak:"<<endl<<t.printAsTree()<<endl;
+
+        cout <<"this tree wygladat tak:"<<endl<<this->printAsTree()<<endl;
+
+//        *root = *t.root;
+//        cout << "jestem w operator tree i zwracam *this" << endl;
+//
+//        if(t.tmp) delete &t;
 
         return *this;
     }else cout <<"NIE DA SIE GLUPCZE"<<endl;
@@ -279,6 +297,49 @@ CNode*& CTree::findNodeToAttachedTree(CNode *&node){
         return node;
     }
 }
+
+
+int CTree::height() {
+    return height(root);
+}
+
+int CTree::height(CNode *node) {
+    if (node == nullptr) {
+        return -1;
+    } else {
+        int left = height(node->leftChild);
+        int right = height(node->righChild);
+
+        return left > right ? left+1 : right+1;
+    }
+}
+
+string CTree::printLevelOrder()
+{
+    string output ="";
+    int h = height();
+    for (int i=0; i<=h; i++)
+        printGivenLevel(root, i,output);
+    return output;
+}
+
+/* Print nodes at a given level */
+void CTree::printGivenLevel(CNode *node, int level,string &output)
+{
+    //string output = "";
+    if (level == 0 && node!= nullptr) {
+        output.append(node->value);
+        output.append(" ");
+        //cout << "dodalem do stringa value:" << node->value << endl;
+    }
+    else if (level > 0 && node!= nullptr)
+    {
+        output.append("\n");
+        printGivenLevel(root->leftChild, level-1,output);
+        printGivenLevel(root->righChild, level-1,output);
+    }
+}
+
 
 /* PRINTING FUNCTIONS ------------------------------------------------------------------------------------------------*/
 

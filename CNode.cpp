@@ -14,29 +14,52 @@ CNode::CNode(const std::string &value, CNode *parent){
     this->parent = parent;
 }
 
+CNode::CNode(){
+    this->value="";
+    this->leftChild= nullptr;
+    this->righChild = nullptr;
+    this->parent = nullptr;
+}
+
 std::string CNode::toString(){
     return this->value;
 }
 
-CNode &CNode::operator=(CNode &otherNode) {
+void CNode::operator=(CNode &otherNode) {
 
-    parent = this;
-    cout << "wywolalem operator = dla noda o value=" << this->value << endl;
-    cout << "a otherNode value=" << otherNode.value << endl;
-    value = otherNode.value;
-    cout << "zmienilem value, teraz this.value=" << this->value << endl;
-    //*parent = *otherNode.parent;
-    if (leftChild != nullptr) {
-    *leftChild = *otherNode.leftChild;
-    leftChild->parent = this;
-        cout <<"zmienilem lewe dziecko"<<endl;
-    }
-    if(righChild != nullptr){
-        *righChild = *otherNode.righChild;
-        righChild->parent = this;
-        cout << "zmienilem prawe dziecko" << endl;
-    }
-    return *this;
+        if(this != nullptr) {
+            //cout << "this nie jest nullptr" << endl;
+            parent = this;
+
+//            cout << "wywolalem operator = dla noda o value= " << this->value << endl;
+//            cout << "a otherNode value=" << otherNode.value << endl;
+            value = otherNode.value;
+
+//            cout << "zmienilem value, teraz this.value=" << this->value << endl;
+//
+//            cout << "jestem przed ifami" << endl;
+
+            if (otherNode.leftChild != nullptr) {
+//                cout <<"robie *leftchild = *otherNode.leftChild"<<endl;
+//                cout <<"a othernode.value="<<otherNode.value<<endl;
+                leftChild = new CNode();
+                *leftChild = *otherNode.leftChild;
+//                cout << "mowie ze lewe dziecko rodzic to ja"<<endl;
+//                cout << "a to lewe dziecko value= "<<leftChild->value<<endl;
+                leftChild->parent = this;
+                //cout << "zmienilem lewe dziecko" << endl;
+            }
+
+            if (otherNode.righChild != nullptr) {
+            righChild = new CNode();
+            *righChild = *otherNode.righChild;
+            righChild->parent = this;
+            //cout << "zmienilem prawe dziecko" << endl;
+            }
+            //return *this;
+        }else{
+            cout <<"NIE DA SIE GUPKU"<<endl;
+        }
 }
 
 CNode::~CNode() {
