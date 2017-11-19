@@ -14,19 +14,21 @@ bool isCommand(const string command, const char *mnemonic) {
 int main(){
 
     CTree a;
-    string s = " * 3 4 ";
-    int result = a.createTree(s);
+    string s = " * 3 4";
+
+    a.createTree(s);
+
     cout << a.printAsTree()<<endl;
 
-    string s1 = "+ 1 2";
     CTree b;
-    int result1 = b.createTree(s1);
-    cout << b.printAsTree()<<endl;
-    //b=a;
+    string s1 = " * 3 4";
 
-    //cout << b.printAsTree() << endl;
-    cout << "b = a+b"<<endl;
-    b = a+b;
+    b.createTree(s1);
+
+    cout << b.printAsTree()<<endl;
+
+    b = a + b;
+
     cout << b.printAsTree() << endl;
 
 }

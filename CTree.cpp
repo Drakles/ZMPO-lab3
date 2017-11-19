@@ -14,15 +14,12 @@ CTree::CTree(){
 }
 
 CTree::~CTree() {
-    cout <<"wywolalem delete CTRee"<<endl;
     delete root;
 }
 
-CTree::CTree(CTree &tree){
-    if(root != nullptr){
-     delete root;
-    }
-    *root = *tree.root;
+
+CTree::CTree(const CTree &tree) {
+    this->root = new CNode(*tree.root);
 }
 
 int CTree::createTree(string &expr){
@@ -54,9 +51,7 @@ int CTree::createTree(string &expr){
             return CREATE_TREE_SUCCES;
         }
     }else{
-        cout << "nie jest ok"<<expr<<endl;
         makeStringCorrect(expr);
-        cout << "poprawione="<<expr<<endl;
         createTree(expr);
         return STRING_INCORRECT;
     }
@@ -147,20 +142,8 @@ CTree& CTree::operator+(CTree &otherTree){
 }
 
 CTree & CTree::operator=(CTree &t){
-    if(root != nullptr) {
-        cout << "wywolalem operator = dla tree" << endl;
-
-        cout <<"t wyglada tak:"<<endl<<t.printAsTree()<<endl;
-
-        cout <<"this tree wygladat tak:"<<endl<<this->printAsTree()<<endl;
-
-//        *root = *t.root;
-//        cout << "jestem w operator tree i zwracam *this" << endl;
-//
-//        if(t.tmp) delete &t;
-
-        return *this;
-    }else cout <<"NIE DA SIE GLUPCZE"<<endl;
+    this->root = new CNode(*t.root);
+    return *this;
 }
 
 void CTree::getVariables(CNode *node, set<string> &setOfVariables){

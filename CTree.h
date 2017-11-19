@@ -49,7 +49,7 @@ class CTree {
 
 public:
 
-    CTree(CTree &tree);
+    CTree(const CTree &tree);
     CTree();
     ~CTree();
 
